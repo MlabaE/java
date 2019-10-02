@@ -1,0 +1,198 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package pizzaordering;
+
+/**
+ *
+ * @author mlaba
+ */
+public class menu {
+    
+    
+    String[] pizzaList = {"Hawaian","Magherita","Regina","Triple meat","Nepolean","Meat supreme","The chicken father","Ribster pizza","Mexican pizza","Chip pizza"};
+    double[] pizzaPrice = {68.90,54.90,68.90,68.90,69.90,79.90,69.90,77.90,69.90,69.90};
+    
+    String[] extras = {"cheese","peperoni","avo","sauce","chicken/meat/rib","none"};
+    double[] extrasPrice = {12.90,24.90,12.90,12.90,29.90,0.0};
+    
+    double total , change ,sumTotal;
+    int arrayChoice1,arrayChoice2, quant;
+     
+     menu()
+     {
+        total = 0.0;  
+        change = 0.0;
+        sumTotal = 0.0;
+     }
+    
+     void setArrayChoice1(int i)//set array choice
+      {
+          arrayChoice1 = i;
+      }
+     
+     void setArrayChoice2(int j)//set array choice
+      {
+          arrayChoice2 = j;
+      }
+     
+      void setQuant(int q)//set quantity of items set from user
+      {
+          quant = q;
+      }
+     
+      void setChange(double x)//set change 
+      {
+          change = x ;  
+      }
+      
+      void runCalc() //calculate orders and produce sumtotal
+      {
+          total = (pizzaPrice[arrayChoice1-1] + extrasPrice[arrayChoice2-1]) * quant;
+          sumTotal+=total;
+      }
+     
+       double sumTotal()//return the overall price
+      {   
+          return sumTotal;
+      }
+       
+       double getChange()//return the change customer needs
+      {
+          return change - sumTotal;
+      }
+       
+       
+}
+
+----------------------------------------------------------------------------------------------------------
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package pizzaordering;
+import java.util.Scanner;
+import java.lang.reflect.Array;
+/**
+ *
+ * @author mlaba
+ */
+public class PizzaOrdering {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+        menu s = new menu();
+        Scanner input = new Scanner(System.in);
+        //initialize variables
+        int count1 = 1, count2 = 1, quantity = 0, choice1 = 0, choice2 = 0, cont = -1;
+        char extras;
+        
+        //display menu
+         System.out.println("-----------------------------------------------------");
+         System.out.println("pizza menu:");
+         System.out.println("-----------------------------------------------------");
+        for (int i = 0; i < s.pizzaList.length; i++) {  
+            String x = (String)Array.get(s.pizzaList, i); 
+            double a = (double)Array.get(s.pizzaPrice, i);
+            System.out.printf("%d)%s\t %f ",count1,x,a);
+            System.out.println();
+            count1++;
+        } 
+        System.out.println("-----------------------------------------------------");
+        System.out.println("extras: ");
+        System.out.println("-----------------------------------------------------");
+        for (int i = 0; i < s.extras.length-1; i++) {  
+            String x = (String)Array.get(s.extras, i); 
+            double d = (double)Array.get(s.extrasPrice, i);
+            System.out.printf("%d)%s\t  %f",count2,x,d);
+            System.out.println();
+            count2++;
+        } 
+        System.out.println("-----------------------------------------------------");
+        
+        //process order
+        System.out.println("Enter your order eg:1 and any integer value besides -1 to end order: ");
+        while(cont == -1)
+        {
+           System.out.print("select pizza : ");
+           choice1 = input.nextInt();
+           if(choice1<1 || choice1>10)
+           {
+               System.out.println("incorrect option please try again:");
+               System.out.print("select pizza : ");
+               choice1 = input.nextInt();
+           }
+           else s.setArrayChoice1(choice1);
+           
+           System.out.print("would you like extras?(Y/N) :");
+           extras = input.next().charAt(0);
+           if(extras=='Y' || extras=='y')
+           {
+              System.out.print("select extra : ");
+              choice2 = input.nextInt();
+               if(choice2<1 || choice2>5)
+           {
+               System.out.println("incorrect option please try again:");
+               System.out.print("select extra : ");
+               choice2 = input.nextInt();
+           }else s.setArrayChoice2(choice2);
+            
+           }else
+               if(extras=='n' || extras=='N')
+               {
+                   choice2 = 6;
+                   s.setArrayChoice2(choice2);
+               }
+               
+           
+            System.out.print("quantity (min 1): ");
+            quantity = input.nextInt();
+            if(quantity<1)
+            {
+               System.out.print("quantity can not be less than 1: "); 
+               System.out.print("quantity: ");
+               quantity = input.nextInt();
+            }
+            else{
+            s.setQuant(quantity);
+            s.runCalc();
+            }
+            
+            System.out.print("enter -1 to continue order or any integer to cancle : ");
+            int userCont = input.nextInt();
+            if(userCont != -1)
+            {
+                cont=userCont;
+                System.out.println("order complete!!");
+                System.out.println();
+            }
+        }
+        
+        //display total 
+        double orderTotal = s.sumTotal();
+        System.out.printf("total price of groceries is %f ",orderTotal);
+        System.out.println();
+        
+        //process payment
+        System.out.print("enter payment amount : ");
+        double userAmount = input.nextDouble();
+        if(userAmount<orderTotal || userAmount!=orderTotal)
+        {
+           System.out.printf("the amount %f is invalid pleasse try again: ",userAmount); 
+           System.out.print("enter payment amount : ");
+           userAmount = input.nextDouble();
+        }else  s.setChange(userAmount);
+        
+        double orderChange = s.getChange();
+        System.out.printf("change : %f",orderChange);
+        System.out.println();
+    }
+    
+}
